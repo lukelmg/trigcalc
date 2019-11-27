@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hello!</title>
+  </head>  
+  <body>
+    <h1 class="title">Hear Sin/Cos</h1>
+    <p id="copy">
+      Copyright © Luke Gutman, 2019 <br><br> Type in integers inside input boxes to calculate and hear a trigonometric cycle. <br>
+      Note: fractions must be typed in as decimals.
+    </p>
+    <span>y = </span><input type="number" id="front">
+    <select id="trig">
+      <option>sin x</option>
+      <option>cos x</option>
+    </select>
+    <input type="number" id="end"><br><br>
+    <button id="play" onclick="math();">
+      Play
+    </button><br><br><br>
+    <h2 class="title">
+      Output:
+    </h2>
+    <p id="notes">
+      Scale: 1π radians = <input id="scale" type="number" value="1"> ms<br> Frequency = 1 / Period
+    </p><br>
+    <span id="output">.</span>
+  </body>
+</html>
+
+
+
+<script>
+
+function math() {
+  var front = document.getElementById("front").value;
+  var end = document.getElementById("end").value;
+  var trig = document.getElementById("trig").value;
+  var msScale = document.getElementById("scale").value;
+  
+  var period;
+  var amplitude; 
+  
+  var frequency;
+  
+  if (front < 0) { // makes sure amplitude isn't negative
+    amplitude = front * -1;
+  } else {
+    amplitude = front;
+  }
+  
+  period = 2 / end; // find period by dividing the end term by 2
+  
+  frequency = 1 / (period * (msScale*10)); // calculate frequency by doing 1 over period times the scale
+  
+  frequency = frequency * 10000; // puts frequency into Hertz
+  
+  frequency = frequency.toFixed(4); /// rounds frequency
+  
+  period = period.toFixed(4); // rounds period
+  
+  period = period + "π"; // displays pi symbol after period
+  
+  document.getElementById("output").innerHTML = "Amplitude = " + amplitude + "<br> Period = " + period + "<br> Frequency = " + frequency + "Hz"; // output to HTML
+  
+  playNote(frequency, 3000); //play frequency for 3000ms
+  
+}
+
+var context = new AudioContext();
+var o = context.createOscillator();
+
+  var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playNote(frequency, duration) {
+  // create Oscillator node
+  var oscillator = audioCtx.createOscillator();
+
+  oscillator.type = "square";
+  oscillator.frequency.value = frequency; // value in hertz
+  oscillator.connect(audioCtx.destination);
+  oscillator.start();
+
+  setTimeout(function() {
+    oscillator.stop();
+  }, duration);
+}
+
+  
+</script>
+
+
+
+
+
+
+
+
+<style>
+
+  #front, #end, #trig, #scale {
+    width: 60px;
+    height: 30px;
+    text-align:right;
+    vertical-align:middle;
+  }
+
+  .title {
+    margin-bottom: 5px;
+    margin-top: 0px
+  }
+  
+  #notes {
+    margin-top: 5px;
+  }
+  
+  #copy {
+    margin-top:0px;
+    font-size: .75em;
+  }
+  
+  #trig {
+    height: 35px;
+  }
+  
+  body {
+    font-size: 1.5vw;
+    font-family:arial;
+  }
+
+  #play {
+    background-color:white;
+    color:black;
+    border: 1px solid black;
+    height: 30px;
+    width: 120px;
+    margin-left: 10px;
+  }
+  
+  
+</style>
